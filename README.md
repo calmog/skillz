@@ -17,20 +17,20 @@ A personal Claude Code skills library.
 ### Install a single skill
 
 ```bash
-cp -r skillz/skills/SKILL_NAME ~/.claude/skills/
+cp -r skillz/SKILL_NAME ~/.claude/skills/
 ```
 
 Or without cloning the repo:
 
 ```bash
-mkdir -p ~/.claude/skills/SKILL_NAME && curl -L https://raw.githubusercontent.com/calmog/skillz/main/skills/SKILL_NAME/SKILL.md -o ~/.claude/skills/SKILL_NAME/SKILL.md
+mkdir -p ~/.claude/skills/SKILL_NAME && curl -L https://raw.githubusercontent.com/calmog/skillz/main/SKILL_NAME/SKILL.md -o ~/.claude/skills/SKILL_NAME/SKILL.md
 ```
 
 ### Install all skills
 
 ```bash
 git clone https://github.com/calmog/skillz.git
-cp -r skillz/skills/* ~/.claude/skills/
+cp -r skillz/* ~/.claude/skills/
 ```
 
 Restart Claude Code after installing.
