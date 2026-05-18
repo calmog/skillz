@@ -1,0 +1,14 @@
+# Private / personal skills — not tracked in public repo
+almog-*/
+aviz-*/
+aliexpress-browse/
+linkedin-connection-scan/
+gh-pages-deploy/
+
+# Runtime state
+.playwright-cli/
+
+# Generated files inside tracked skills
+ateam-apply/profile.md
+ateam-apply/linkedin.pdf
+ateam-apply/applied_missions.md
