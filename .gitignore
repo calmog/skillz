@@ -8,6 +8,9 @@ gh-pages-deploy/
 # Runtime state
 .playwright-cli/
 
+# Local notes
+SKILLZ_NOTES.md
+
 # Generated files inside tracked skills
 ateam-apply/profile.md
 ateam-apply/linkedin.pdf
