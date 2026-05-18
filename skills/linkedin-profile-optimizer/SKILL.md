@@ -81,23 +81,6 @@ author: calmog
 - If you operate professionally in English daily (meetings, docs, code reviews, hiring), "Native or Bilingual Proficiency" is appropriate even if English isn't your first language.
 - "Full Professional Proficiency" signals you can function but aren't fully comfortable — often not the right signal for senior tech roles in international companies.
 
-## CTO-to-TL Narrative Strategy
-
-When someone is moving from CTO back to Team Leader:
-- Frame leadership as identity, not title. The story is "I've always been a team builder" not "I was a CTO and now I want to be a TL."
-- Lead with team leadership keywords everywhere (headline, About, skills).
-- In the CTO role description, emphasize the team-building aspects over the founder/business aspects.
-- The About section should anchor around team leadership philosophy, with the CTO role appearing as one chapter in a consistent leadership journey.
-
-## CTO-to-Freelance-IC Narrative Strategy
-
-When someone is moving from CTO/founder back to individual contributor freelance work:
-- The concern is overqualification. Reframe: IC at this level means senior ownership, not junior execution. They ship things CEOs can't — that's the value.
-- Lead with *shipping* and *scale*, not management. "Built 0→35K DAU as sole engineer" beats "managed cross-functional teams."
-- Emphasize AI-augmented velocity — a senior IC using Claude Code/Cursor ships faster than a team without it.
-- Don't hide the leadership background — use it as a differentiator ("brings systems thinking and product judgment that junior devs lack") but don't lead with it.
-- Headline: lead with the dev role keyword first, e.g. "Senior Mobile Developer | Flutter · React Native · iOS · Android | 15+ Years Shipping"
-
 ## Common Mistakes to Avoid
 
 1. **CV copy-paste**: LinkedIn experience sections should tell a story, not list responsibilities.

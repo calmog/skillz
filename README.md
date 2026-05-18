@@ -10,7 +10,7 @@ A personal Claude Code skills library.
 | **web-browse** | Strategic guide for browser automation with playwright-cli — token-efficient patterns, React form filling, account-ban-risk rules, Chrome extension fallback |
 | **playwright-cli** | Full playwright-cli command reference — navigation, clicking, keyboard, mouse, tabs, storage, network mocking, DevTools, and React-specific gotchas |
 | **usage-guard** | Calibrate Claude Code's token usage guard — syncs the window limit from `/usage` output so the PreToolUse hook fires accurately |
-| **linkedin-profile-optimizer** | Optimize LinkedIn profiles for tech leadership roles — headlines, About sections, experience entries, and CTO-to-IC/freelance narrative strategy |
+| **linkedin-profile-optimizer** | Optimize LinkedIn profiles for tech leadership roles — headlines, About sections, experience entries, and common mistakes |
 
 ## Installation
 
