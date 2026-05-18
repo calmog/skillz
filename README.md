@@ -6,11 +6,11 @@ A personal Claude Code skills library.
 
 | Skill | Description |
 |-------|-------------|
-| **ateam-apply** | Apply to freelance missions on A.Team (platform.a.team). Scans recommended missions, evaluates fit, fills and submits applications. |
-| **web-browse** | Browser automation with playwright-cli. Covers token-efficient patterns, React form filling, account-ban-risk rules and Chrome extension fallback. |
-| **playwright-cli** | playwright-cli command reference covering navigation, clicking, keyboard, mouse, tabs, storage, network mocking, DevTools and React-specific gotchas. |
-| **usage-guard** | Calibrate Claude Code's token usage guard. Syncs the window limit from `/usage` output so the PreToolUse hook fires accurately. |
-| **linkedin-profile-optimizer** | Optimize LinkedIn profiles for tech leadership roles. Covers headlines, About sections, experience entries and common mistakes. |
+| **ateam-apply** | When you're ready to work your A.Team mission queue, this handles the full loop. Scans what's live, filters by your criteria, opens each mission and fills the application while you review and approve. |
+| **web-browse** | When Claude needs to click, scroll, fill a form or scrape a page, this guides it to do that without burning tokens on screenshots. Also covers which sites will ban your account if automated and what the right fallback is for each. |
+| **playwright-cli** | The command reference for playwright-cli. When you're building or debugging browser automation and need to remember how to handle cookies, intercept network requests or trigger React state changes, this is the lookup. |
+| **usage-guard** | When you're running a long task and don't want Claude to freeze mid-work when it hits the token limit, this skill syncs the usage guard so Claude pauses before the limit and automatically reschedules to pick up where it left off when the window renews. |
+| **linkedin-profile-optimizer** | When your LinkedIn reads like a CV paste job and isn't pulling recruiter attention, this walks through every section with concrete guidance on what to lead with, what to cut and how to make the profile tell a story instead of listing responsibilities. |
 
 ## Installation
 
