@@ -6,11 +6,11 @@ A personal Claude Code skills library.
 
 | Skill | Description |
 |-------|-------------|
-| **ateam-apply** | Apply to freelance missions on A.Team (platform.a.team) — scans recommended missions, evaluates fit, fills and submits applications |
-| **web-browse** | Strategic guide for browser automation with playwright-cli — token-efficient patterns, React form filling, account-ban-risk rules, Chrome extension fallback |
-| **playwright-cli** | Full playwright-cli command reference — navigation, clicking, keyboard, mouse, tabs, storage, network mocking, DevTools, and React-specific gotchas |
-| **usage-guard** | Calibrate Claude Code's token usage guard — syncs the window limit from `/usage` output so the PreToolUse hook fires accurately |
-| **linkedin-profile-optimizer** | Optimize LinkedIn profiles for tech leadership roles — headlines, About sections, experience entries, and common mistakes |
+| **ateam-apply** | Apply to freelance missions on A.Team (platform.a.team). Scans recommended missions, evaluates fit, fills and submits applications. |
+| **web-browse** | Browser automation with playwright-cli. Covers token-efficient patterns, React form filling, account-ban-risk rules and Chrome extension fallback. |
+| **playwright-cli** | playwright-cli command reference covering navigation, clicking, keyboard, mouse, tabs, storage, network mocking, DevTools and React-specific gotchas. |
+| **usage-guard** | Calibrate Claude Code's token usage guard. Syncs the window limit from `/usage` output so the PreToolUse hook fires accurately. |
+| **linkedin-profile-optimizer** | Optimize LinkedIn profiles for tech leadership roles. Covers headlines, About sections, experience entries and common mistakes. |
 
 ## Installation
 
