@@ -1,6 +1,7 @@
 ---
 name: ateam-apply
 description: Apply to freelance positions on A.Team (platform.a.team) for Almog Cohen. Use when the user says "apply to A.Team", "check recommended missions", "work through my A.Team queue", "any new missions?", or otherwise references platform.a.team. Also serve as the default for open-ended start-work requests ("let's go", "next", "continue", "what's next") when the current working directory is the A.Team applications project.
+author: calmog
 ---
 
 # A.Team Freelance Application Manager

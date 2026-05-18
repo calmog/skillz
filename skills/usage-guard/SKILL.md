@@ -1,6 +1,7 @@
 ---
 name: usage-guard
 description: Calibrate the Claude Code token usage guard. Run after checking /usage to sync the guard's limit with your actual window. Also shows current usage status.
+author: calmog
 argument-hint: "<percentage from /usage>  e.g. /usage-guard 48"
 ---
 

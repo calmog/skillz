@@ -1,6 +1,7 @@
 ---
 name: web-browse
 description: Generic web browsing and page interaction skill. Use for ANY task involving opening URLs, reading pages, clicking, filling forms, scraping content, or automating web workflows. Default to playwright-cli; the Chrome extension (mcp__claude-in-chrome__*) is only allowed as a fallback when playwright-cli is blocked by bot/automation detection (Cloudflare/Turnstile/hCaptcha, headless fingerprinting, etc.).
+author: calmog
 allowed-tools: Bash(playwright-cli:*) Bash(cat:*) Write(/tmp/*) Read(/tmp/*)
 ---
 

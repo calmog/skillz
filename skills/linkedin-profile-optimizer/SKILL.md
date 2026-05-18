@@ -3,6 +3,7 @@ name: linkedin-profile-optimizer
 description: Optimize LinkedIn profiles for tech leadership roles — headlines, About sections, and experience entries.
   TRIGGER when: user mentions "LinkedIn" in the context of their profile, headline, About section, or experience entries.
   DO NOT TRIGGER when: user mentions LinkedIn in a programming context (API, scraping, automation, OAuth).
+author: calmog
 ---
 
 # LinkedIn Profile Optimizer for Tech Leadership Roles
