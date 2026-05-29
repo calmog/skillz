@@ -45,15 +45,17 @@ Some sites fingerprint automation and **close accounts** when they detect it. **
 
 ## Session Setup
 
+**Session names:** Always use the `$PLAYWRIGHT_SESSION` environment variable as the session name (`-s=$PLAYWRIGHT_SESSION`). Never hardcode a session name. If the variable is unset, fall back to `browser-default`. This ensures parallel Claude Code windows never collide on the same browser session.
+
 ```bash
 # Check what's already open (free — no output block)
 playwright-cli list
 
 # Open with logged-in Chrome profile
-playwright-cli -s=mysession open --browser=chrome --persistent --profile="/Users/YOUR_USERNAME/Library/Application Support/Google/Chrome/Profile 1" https://example.com
+playwright-cli -s=$PLAYWRIGHT_SESSION open --browser=chrome --persistent --profile="/Users/YOUR_USERNAME/Library/Application Support/Google/Chrome/Profile 1" https://example.com
 ```
 
-Always use a named session (`-s=name`). Navigate + verify in one call — don't use standalone `goto` (it triggers a snapshot attempt):
+Always use a named session (`-s=$PLAYWRIGHT_SESSION`). Navigate + verify in one call — don't use standalone `goto` (it triggers a snapshot attempt):
 
 ```bash
 # Bad: goto triggers snapshot attempt
