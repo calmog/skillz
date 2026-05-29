@@ -1,5 +1,6 @@
 ---
 name: todoist
+author: calmog
 description: "Manage Todoist — create, update, complete, and organize tasks, projects, sections, and reminders, including rescheduling. Consult before any Todoist action. Use when the user mentions Todoist or a to-do list, asks to add/track a task or set a reminder, or wants to manage projects/sections or reschedule items."
 ---
 

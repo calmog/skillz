@@ -1,5 +1,6 @@
 ---
 name: config-authoring
+author: calmog
 description: >
   Standards and pre-flight checklist for writing or editing any Claude-facing
   instruction file — CLAUDE.md (global ~/.claude or any project), auto-memory
