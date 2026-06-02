@@ -15,3 +15,7 @@ SKILLZ_NOTES.md
 ateam-apply/profile.md
 ateam-apply/linkedin.pdf
 ateam-apply/applied_missions.md
+
+# Python bytecode
+**/__pycache__/
+*.pyc
