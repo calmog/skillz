@@ -4,6 +4,9 @@ aviz-*/
 aliexpress-browse/
 linkedin-connection-scan/
 gh-pages-deploy/
+park/
+kill/
+wrap-and-close/
 
 # Runtime state
 .playwright-cli/
