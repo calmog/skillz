@@ -1,7 +1,7 @@
 ---
 name: todoist
 author: calmog
-description: "Manage Todoist — create, update, complete, and organize tasks, projects, sections, and reminders, including rescheduling. Consult before any Todoist action. Use when the user mentions Todoist or a to-do list, asks to add/track a task or set a reminder, or wants to manage projects/sections or reschedule items."
+description: "Manage Todoist — create, update, complete, and organize tasks, projects, sections, and reminders, including rescheduling. Consult before any Todoist action. Use when the user mentions Todoist or a to-do list, asks to add/track a task or set a reminder, or wants to manage projects/sections, reschedule items, or order/sort the Today view (incl. exact manual day_order via the Sync API)."
 ---
 
 # Todoist Skill
@@ -86,6 +86,27 @@ Deleting a section may delete tasks still belonging to it. Always detach tasks f
 2. `update-tasks` (one batched call) with `projectId` set and `sectionId` omitted, for every task in the section
 3. `delete-object` with `type: "section"` to remove the now-empty section
 4. `find-tasks` on the project afterward to confirm tasks are intact
+
+---
+
+## Ordering tasks in the Today / Upcoming view
+
+**Smart sort (the default) tie-break order:** due date+time → priority (P1→P4) → deadline → manual `day_order` → creation time. Timed tasks sort chronologically and ahead of untimed ones for the day; **overdue** tasks group in a pinned section at the top and can't be manually reordered. An explicit per-view sort (Priority/Date/Name) overrides Smart sort.
+
+**To force a specific order, two paths:**
+
+1. **Via the MCP (no token) — partial.** The MCP cannot set `day_order` (`reorder-objects` = projects/sections only; `update-tasks.order` = within-section only). Order tasks by giving each an explicit due **time** in sequence, with priority as tiebreak. Deterministic only if every task is timed; untimed tasks aren't reliably placeable.
+
+2. **Via the Sync API (exact, preferred) — needs the API token.** Sets true `day_order` (manual position); works for untimed tasks. **Requires the user's Today view Sort = "Manual"** for `day_order` to be the primary key (under Smart sort it's only the 4th tiebreak, so it won't visibly move anything).
+   - Token: read from `~/.config/todoist/api_token` (chmod 600). Never print or echo the value.
+   - Command (`ids_to_orders` maps task ID → 1-based position; IDs are the same ones the MCP returns):
+     ```bash
+     TOKEN=$(cat ~/.config/todoist/api_token)
+     CMD='[{"type":"item_update_day_orders","uuid":"'"$(uuidgen)"'","args":{"ids_to_orders":{"<taskId>":1,"<taskId>":2}}}]'
+     curl -s -X POST https://api.todoist.com/api/v1/sync \
+       -H "Authorization: Bearer $TOKEN" --data-urlencode "commands=$CMD"
+     ```
+   - Success = response contains `"sync_status": { "<uuid>": "ok" }`. (Endpoint: `https://api.todoist.com/api/v1/sync`; Sync API only — REST has no day_order.)
 
 ---
 
