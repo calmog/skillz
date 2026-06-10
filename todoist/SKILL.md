@@ -27,6 +27,18 @@ In all these cases: stop, show the user the error, ask them to reauth, and wait 
 
 ---
 
+## GUARDRAIL: Every task must have a date — always
+
+**Hard rule. No task may exist without a due date. Applies to every create and every edit.**
+
+- **On create (`add-tasks`):** always include a `dueString`. Never create a dateless task. If the user didn't say when, default to today (`dueString: "today"`) unless the context clearly implies another date — don't silently leave it blank.
+- **On edit (`update-tasks` / `reschedule-tasks`):** never drop or clear an existing date. If you're changing a task for any reason, preserve its due date (or move it to a new date) — never end up with no date.
+- **Never remove a task's date.** Do **not** call `update-tasks` with `dueString: "remove"`. The only exception: Almog explicitly asks, in the current request, to remove that specific task's date. Absent that explicit instruction, removing a date is forbidden — including as a side effect of any other edit.
+
+**Bottom line: after any create or edit, the task has a date. No exceptions without an explicit "remove the date" from Almog.**
+
+---
+
 ## Confirmed Tool Behavior
 
 ### add-sections
@@ -70,8 +82,8 @@ Supported on `add-tasks` and `update-tasks`. Formats: `"2h"`, `"90m"`, `"2h30m"`
 
 ### Removing fields
 
-- Remove due date: `update-tasks` with `dueString: "remove"`
-- Remove deadline: `update-tasks` with `deadlineDate: "remove"`
+- Remove due date: `update-tasks` with `dueString: "remove"` — **forbidden by default**, see the "Every task must have a date" guardrail above. Only when Almog explicitly asks to remove this task's date.
+- Remove deadline: `update-tasks` with `deadlineDate: "remove"` (the deadline is separate from the due date; removing it is fine and does not violate the date guardrail)
 - Remove section (move to root): omit `sectionId` entirely — there is no `sectionId: null` or empty-string variant
 
 ### Detaching tasks from sections
