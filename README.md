@@ -12,6 +12,9 @@ A personal Claude Code skills library.
 | **usage-guard** | When you're running a long task and don't want Claude to freeze mid-work when it hits the token limit, this skill syncs the usage guard so Claude pauses before the limit and automatically reschedules to pick up where it left off when the window renews. |
 | **linkedin-profile-optimizer** | When your LinkedIn reads like a CV paste job and isn't pulling recruiter attention, this walks through every section with concrete guidance on what to lead with, what to cut and how to make the profile tell a story instead of listing responsibilities. |
 | **excalidraw-board** | When you want a diagram or board you can actually open and edit instead of a flat image, this builds a real Excalidraw file from a short Python script (boxes, arrows, wrapped text) and can render it to PNG for quick sharing. Good for architecture sketches, flows and interview boards. |
+| **html-to-pdf** | When you need a PDF that looks hand-made and holds a hard page limit, this renders any HTML through real headless Chrome so full CSS, web fonts, images and Hebrew/RTL all come out right, then reads the page count back so you know before you send. Built because Chrome's own print-to-pdf hangs on Mac. |
+| **todoist** | When you want Claude to add, reschedule or organize Todoist tasks, projects and reminders without mangling a recurring schedule or dropping a due date, this is the playbook it checks first. |
+| **config-authoring** | When you're writing or editing anything Claude reads as instructions (a CLAUDE.md, a memory file, a SKILL.md, a guardrail doc), this is the standards and pre-flight checklist that keeps them clear and consistent. |
 
 ## Installation
 

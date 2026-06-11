@@ -1,0 +1,10 @@
+{
+  "name": "html-to-pdf",
+  "version": "1.0.0",
+  "description": "Render any HTML file to PDF via headless Chrome-for-Testing (puppeteer-core). Node-version-proof, no yargs.",
+  "private": true,
+  "main": "scripts/html-to-pdf.cjs",
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}
