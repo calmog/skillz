@@ -101,6 +101,29 @@ Deleting a section may delete tasks still belonging to it. Always detach tasks f
 
 ---
 
+## Moving / re-dating COMPLETED tasks (Sync API — the MCP & UI cannot)
+
+The MCP and the Todoist UI **cannot move a completed ("filled") task** — you must uncomplete → move → recomplete, which **clobbers `completed_at` to now**. The raw Sync API does not have this limitation. Token: `~/.config/todoist/api_token` (chmod 600, never echo it). Endpoint: `https://api.todoist.com/api/v1/sync`. Verified June 2026.
+
+- **Move a completed task (date preserved):** `item_move` works directly on a completed task and keeps `checked` + `completed_at` **unchanged**. This is the clean way to move filled tasks between projects/sections — no uncomplete needed.
+  ```bash
+  TOKEN=$(cat ~/.config/todoist/api_token)
+  curl -s https://api.todoist.com/api/v1/sync -H "Authorization: Bearer $TOKEN" -d sync_token='*' \
+    --data-urlencode commands='[{"type":"item_move","uuid":"<uuid>","args":{"id":"<taskId>","project_id":"<projId-or-inbox-id>"}}]'
+  ```
+  Only ONE of `project_id` / `section_id` / `parent_id` per `item_move`. Inbox is a real project — get its id from `GET /projects` (`is_inbox_project: true`). Moving to a section/project detaches a subtask to top-level (you cannot null `parent_id` directly).
+
+- **Backdate a completion date:** if a date already got clobbered (or you must set a custom one), use `item_complete` with `date_completed` — but you must **reopen first, then complete**; `item_complete` on an already-completed task is a no-op for the date.
+  ```bash
+  commands='[{"type":"item_uncomplete","uuid":"<u1>","args":{"id":"<id>"}},
+             {"type":"item_complete","uuid":"<u2>","args":{"id":"<id>","date_completed":"2024-04-11T20:37:28.844000Z"}}]'
+  ```
+  Prefer `item_move` and never clobber in the first place. Reopening a **subtask auto-reopens its parent** — re-complete the parent after.
+
+- **Enumerating completed tasks is capped at 3-month windows.** `GET /tasks/completed/by_completion_date?since=…&until=…&project_id=…` (and the MCP `find-completed-tasks`) reject ranges > ~92 days. To get ALL completed tasks in a project, **loop every quarter** and paginate via `next_cursor` — a single window silently misses older tasks (this caused a real miss).
+
+---
+
 ## Ordering tasks in the Today / Upcoming view
 
 **Smart sort (the default) tie-break order:** due date+time → priority (P1→P4) → deadline → manual `day_order` → creation time. Timed tasks sort chronologically and ahead of untimed ones for the day; **overdue** tasks group in a pinned section at the top and can't be manually reordered. An explicit per-view sort (Priority/Date/Name) overrides Smart sort.
