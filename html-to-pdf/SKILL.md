@@ -1,6 +1,6 @@
 ---
 name: html-to-pdf
-description: Render any HTML file to a PDF via headless Chrome. Use when asked to 'convert HTML to PDF', 'generate a PDF from HTML', 'export to PDF', or to produce a PDF from a markdown/HTML document. Handles full CSS, images, web fonts and Hebrew/RTL (it is real Chromium). Replaces the broken aviz-html-to-pdf skill.
+description: Render any HTML file to a PDF via headless Chrome. Use when asked to 'convert HTML to PDF', 'generate a PDF from HTML', 'export to PDF', or to produce a PDF from a markdown/HTML document. Handles full CSS, images, web fonts and Hebrew/RTL (it is real Chromium).
 version: "1.0.0"
 author: calmog
 tags:
@@ -22,7 +22,7 @@ binary through `puppeteer-core`. Full headless Chromium, so anything Chrome can 
 
 - Chrome's own `--headless --print-to-pdf` **hangs** on this Mac (ARM/Rosetta). Do not use it.
 - `pandoc`, `wkhtmltopdf`, `weasyprint`, `md-to-pdf` are **not installed**.
-- The previous `aviz-html-to-pdf` skill's CLI broke under Node 26 (a `yargs` extensionless-file
+- An earlier version of this skill's CLI broke under Node 26 (a `yargs` extensionless-file
   ESM load error). This skill uses hand-rolled arg parsing (no yargs) so it is Node-version-proof.
 
 ## Usage

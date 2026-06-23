@@ -3,7 +3,7 @@
  * html-to-pdf — render any HTML file to PDF via headless Chrome (puppeteer-core).
  *
  * Why this exists: Chrome's own `--headless --print-to-pdf` hangs on this Mac, and
- * the old aviz skill's CLI broke under Node 26 (a yargs/ESM load error). This script
+ * an earlier version's CLI broke under Node 26 (a yargs/ESM load error). This script
  * drives the already-downloaded Chrome-for-Testing binary directly through
  * puppeteer-core, with hand-rolled arg parsing (no yargs), so it stays Node-version-proof.
  *
