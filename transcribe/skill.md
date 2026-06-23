@@ -60,3 +60,9 @@ uvx --with faster-whisper python transcribe.py -i /path/to/video.mp4 -o /path/to
 
 1. `.srt` file — standard subtitle file with timestamps.
 2. `.json` file (optional, `--json`) — detected language + plain transcript.
+
+## Telegram voice notes
+
+Telegram voice-note transcription uses the same local engine via
+`~/.claude/scripts/tg-transcribe.sh` (called by `tg-daemon`). That path outputs
+plain text and auto-deletes the source audio after transcribing.
