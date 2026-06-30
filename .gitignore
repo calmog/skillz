@@ -1,10 +1,9 @@
-# Private / personal skills — not tracked in public repo
+# Personal / third-party skills not tracked in this PUBLIC repo.
+# Personal/PII skills now live in the private skillz-private plugin repo, not here.
+# These two patterns are a backstop so a stray personal or aviz skill dropped into
+# this dir isn't accidentally published.
 almog-*/
 aviz-*/
-aliexpress-browse/
-linkedin-connection-scan/
-park/
-kill/
 
 # Runtime state
 .playwright-cli/
@@ -20,4 +19,3 @@ ateam-apply/applied_missions.md
 # Python bytecode
 **/__pycache__/
 *.pyc
-linkedin-profile-optimizer/
