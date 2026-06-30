@@ -14,6 +14,8 @@ allowed-tools: Bash, Read, Write, Glob
 
 # html-to-pdf
 
+_Adapted from [aviz85/claude-skills-library](https://github.com/aviz85/claude-skills-library) — substantially rewritten (condensed to a single puppeteer-core script)._
+
 Render an HTML file to PDF by driving the already-downloaded **Chrome-for-Testing**
 binary through `puppeteer-core`. Full headless Chromium, so anything Chrome can display
 (CSS, JS, images, web fonts, RTL/Hebrew) comes out pixel-accurate in the PDF.
