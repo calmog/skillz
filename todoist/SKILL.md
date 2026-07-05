@@ -6,24 +6,28 @@ description: "Manage Todoist — create, update, complete, and organize tasks, p
 
 # Todoist Skill
 
-## CRITICAL: Authorization Check First
+## Access: MCP is the registered primary; v1 token API is the explicit fallback
 
-**BEFORE calling any Todoist MCP tool, verify the connector is active.**
+Two access paths. **Default to the MCP.** Use the token API only in the two cases named below — don't deduce when to switch, they're stated here.
 
-If Todoist tools are unavailable, return an auth error, or are not listed in available tools:
-- Do NOT attempt workarounds
-- Do NOT use the Anthropic API to call Todoist MCP directly
-- STOP and tell the user exactly this:
+**Primary — the Todoist MCP connector** (`mcp__todoist__*`: `add-tasks`, `find-tasks`, `reschedule-tasks`, etc.). It's a **registered Claude Code connector** (user scope, so present in every project), added via:
+```
+claude mcp add --scope user --transport http todoist https://ai.todoist.net/mcp
+```
+Streamable HTTP + OAuth; endpoint `https://ai.todoist.net/mcp`. It shows as plain `todoist` (not `claude.ai Todoist`) — that's expected, it's the CLI-registered one, separate from account-managed connectors. **Use it for everything except the fallback cases below.**
 
-> "The Todoist connector isn't currently active. Please reconnect it in your MCP settings, then confirm and I'll proceed."
+**Fallback — the direct v1 token API.** Reach for it in exactly two situations:
 
-**Signs the connector is broken mid-session:**
-- `HTTP 401` or `UNAUTHORIZED` errors
-- `"This connector requires authentication"` errors
-- `"Tool not found"` errors for Todoist tools
-- Tools disappearing after working earlier in the conversation
+1. **Completed-task operations the MCP genuinely cannot do** — moving a completed/filled task (preserving `completed_at`) or backdating a completion date. Always use the token API for these; don't uncomplete→move→recomplete via the MCP (it clobbers `completed_at`).
+2. **MCP unavailable mid-task** — tools not listed, `HTTP 401`/`UNAUTHORIZED`, `"This connector requires authentication"`, `"Tool not found"`, or tools that worked earlier vanishing. **Do not stop, and do not call Todoist MCP via the Anthropic API.** Note the MCP needs re-auth (tell Almog to run `/mcp` → todoist, then restart Claude Code to reload tools), but meanwhile proceed on the token API so the task still gets done.
 
-In all these cases: stop, show the user the error, ask them to reauth, and wait for confirmation. Never silently retry more than once.
+Token API specifics:
+- Token: `~/.config/todoist/api_token` (40-char bearer, chmod 600 — never echo it).
+- Endpoint: **`https://api.todoist.com/api/v1`** — the only live API. **Never touch `rest/v2` or `sync/v9`; both were shut down early 2026.** Don't rediscover this by trying a dead endpoint first.
+- Task CRUD is the REST-style `…/api/v1/tasks`; batch/ordering/completed-task ops go through `…/api/v1/sync` with a `commands` array.
+- Full how-to (backdating completions, moving completed tasks, gotchas) is in memory: `~/.claude/memory/reference-todoist-direct-api.md`.
+
+All the guardrails below (every task has a date, priorities as strings, recurrence rules, etc.) apply identically whichever path you use. Never silently retry a failing call more than once.
 
 ---
 
