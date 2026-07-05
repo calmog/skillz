@@ -50,6 +50,7 @@ The more expensive a miss, the further down the ladder it belongs.
 - **One fact per topic file**, with frontmatter: `name` (kebab-case slug), `description` (used for recall relevance), `metadata.type` = `user | feedback | project | reference`. For `feedback`/`project`, follow the fact with **Why:** and **How to apply:** lines.
 - **Check for an existing file first** — update it rather than create a duplicate. Delete memories that turn out wrong.
 - **Link related memories** with `[[other-name]]`. **Convert relative dates to absolute.**
+- **Save the rule, not its paperwork.** Skip ceremonial citation stamps — the `(confirmed <date>)` tails and incident proper-names Claude habitually appends. Keep an incident anchor only where the rule would otherwise read as arbitrary and get pruned, and phrase it as the underlying reason, not the date or name. (Dates that genuinely belong still go in absolute per the line above.)
 - Don't save what the repo/git/CLAUDE.md already records, or what only matters to the current conversation.
 
 ## 4. Authoring a SKILL.md
