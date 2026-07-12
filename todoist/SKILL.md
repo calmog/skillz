@@ -25,6 +25,7 @@ Token API specifics:
 - Token: `~/.config/todoist/api_token` (40-char bearer, chmod 600 — never echo it).
 - Endpoint: **`https://api.todoist.com/api/v1`** — the only live API. **Never touch `rest/v2` or `sync/v9`; both were shut down early 2026.** Don't rediscover this by trying a dead endpoint first.
 - Task CRUD is the REST-style `…/api/v1/tasks`; batch/ordering/completed-task ops go through `…/api/v1/sync` with a `commands` array.
+- **Due-date field name is `date`, not `dueDate`.** On the raw API a task's due is the object `"due": {"date": "YYYY-MM-DD", ...}` (and the Sync `item_update` arg is likewise `"due": {"date": …}`). There is no `dueDate` field anywhere — don't guess it and eat a retry.
 - Full how-to (backdating completions, moving completed tasks, gotchas) is in memory: `~/.claude/memory/reference-todoist-direct-api.md`.
 
 All the guardrails below (every task has a date, priorities as strings, recurrence rules, etc.) apply identically whichever path you use. Never silently retry a failing call more than once.
