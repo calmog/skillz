@@ -1,0 +1,8 @@
+{
+  "name": "Your Name",
+  "timezone": "UTC",
+  "git": {
+    "author": "your-git-username-or-email",
+    "repo_roots": ["~/Dev/*"]
+  }
+}
