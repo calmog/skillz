@@ -10,13 +10,51 @@ Config-driven and self-contained: the deterministic core needs only the GitHub C
 no OAuth, no servers. Everything user-specific lives in your local
 `~/.config/dev-day-summary/config.json`.
 
+## Install
+
+The skill is one folder in the `calmog/skillz` repo. Sparse-checkout just that folder,
+then drop it into your Claude Code skills dir. **Prerequisites:** `git` and the GitHub
+CLI (`gh`) — plus [`gh auth login`](https://cli.github.com/) with `repo` + `read:org`.
+
+> **Windows note:** the deterministic pull is a bash script, so Claude Code needs the
+> Bash tool to run it. On native Windows that means installing
+> [Git for Windows](https://git-scm.com/downloads/win) (provides Git Bash) — without it
+> Claude Code falls back to the PowerShell tool and the pull won't run. WSL works too.
+> The skills folder itself lives at `%USERPROFILE%\.claude\skills\` on native Windows, or
+> `~/.claude/skills/` inside your WSL home.
+
+**macOS / Linux** (and Windows via Git Bash / WSL — Claude Code runs bash there):
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse https://github.com/calmog/skillz.git /tmp/skillz-dds
+cd /tmp/skillz-dds && git sparse-checkout set dev-day-summary
+mkdir -p ~/.claude/skills && cp -R dev-day-summary ~/.claude/skills/
+rm -rf /tmp/skillz-dds
+```
+
+**Windows — PowerShell** (skills live under `%USERPROFILE%\.claude\skills\`):
+
+```powershell
+git clone --depth 1 --filter=blob:none --sparse https://github.com/calmog/skillz.git $env:TEMP\skillz-dds
+cd $env:TEMP\skillz-dds; git sparse-checkout set dev-day-summary
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills" | Out-Null
+Copy-Item -Recurse -Force dev-day-summary "$env:USERPROFILE\.claude\skills\"
+Remove-Item -Recurse -Force $env:TEMP\skillz-dds
+```
+
+That's it — no manual config editing. First time you invoke it (below), the skill
+detects it's unconfigured and walks you through a one-time setup **conversationally**
+(Claude writes `~/.config/dev-day-summary/config.json` for you), then continues. The
+`scripts/setup.sh` wizard is only a plain-terminal fallback — you don't need to run it
+on any OS.
+
 ## Quick start
 
-1. **Setup** (once, ~2 min): `bash scripts/setup.sh` — an interactive wizard that asks
-   for your details and writes the config (no hand-editing). Only requirement is
-   `gh auth login`. See [SETUP.md](SETUP.md).
-2. **Use**: ask Claude to *"summarize my dev day"*. It runs one pull and fills the
-   template in [SKILL.md](SKILL.md).
+1. **Use**: ask Claude to *"summarize my dev day"* (or `/dev-day-summary`). On first run
+   it auto-configures (name + repo roots — everything else is detected), then runs one
+   pull and fills the template in [SKILL.md](SKILL.md).
+2. **Reconfigure** any time: `bash scripts/setup.sh`, or just tell Claude your git author
+   / repo roots changed. See [SETUP.md](SETUP.md).
 
 ## What it pulls
 
