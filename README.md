@@ -15,6 +15,7 @@ A personal Claude Code skills library.
 | **html-to-pdf** | When you need a PDF that looks hand-made and holds a hard page limit, this renders any HTML through real headless Chrome so full CSS, web fonts, images and Hebrew/RTL all come out right, then reads the page count back so you know before you send. Built because Chrome's own print-to-pdf hangs on Mac. |
 | **todoist** | When you want Claude to add, reschedule or organize Todoist tasks, projects and reminders without mangling a recurring schedule or dropping a due date, this is the playbook it checks first. |
 | **config-authoring** | When you're writing or editing anything Claude reads as instructions (a CLAUDE.md, a memory file, a SKILL.md, a guardrail doc), this is the standards and pre-flight checklist that keeps them clear and consistent. |
+| **docx-editing** | When you need Claude to read or edit a Word `.docx` file it otherwise can't open, this walks it through unzipping the document to XML, editing the text in place while keeping the formatting, and repacking it — using only `zip`/`unzip`, so no Python or Node library to install. |
 
 ## Installation
 

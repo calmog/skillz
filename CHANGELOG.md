@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-27
+
+### Added
+- **docx-editing** skill. Reads and edits Word `.docx` files by unzipping them to XML, editing `word/document.xml` in place (keeping run/paragraph formatting intact), and repacking with the `zip`/`unzip` CLI — no Python or Node library required, so it runs on any machine. Covers the XML structure (paragraphs, runs, styles), hyperlink field codes, and what not to touch. Was previously the private `aviz-docx-editing`; sanitized of machine-specific notes and published here.
+
 ## 2026-06-11
 
 ### Added
