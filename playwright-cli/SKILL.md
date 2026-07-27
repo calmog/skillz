@@ -158,6 +158,8 @@ playwright-cli video-stop video.webm
 
 ## Open parameters
 ```bash
+# Show a real browser window — HEADLESS is the default, so this flag is required
+playwright-cli open --headed
 # Use specific browser when creating session
 playwright-cli open --browser=chrome
 playwright-cli open --browser=firefox
@@ -299,6 +301,14 @@ playwright-cli close
 ```
 
 ## Gotchas and tricks
+
+### "The window never opened" — `open` is headless by default
+`playwright-cli open` runs **headless**; there is no auto-detection of intent. Whenever the
+point is for a human to *watch* the browser (a login with 2FA, a visual repro, a UI demo),
+`--headed` must be on the `open` command — assuming it's the default gets you a session that
+works fine over the CLI while no window ever appears. Applies to `-s=<session> open` too, and
+`--headed` is an option of `open` alone — no later command accepts it, so a session that was
+opened headless has to be `close`d and re-`open`ed to get a window.
 
 ### Editors built on ProseMirror / tiptap
 If a page uses tiptap, the `.ProseMirror` DOM node exposes `.editor` which is the tiptap Editor instance. This lets you bypass keyboard-based schema enforcement (e.g., apps that force first block to be a heading when you type):
