@@ -5,10 +5,6 @@
 almog-*/
 aviz-*/
 
-# Company (ASK-Y) skills reached by symlink into ~/Dev clones — never publish these.
-# No trailing slash: git sees a symlink-to-dir as a file, so `dir/` would not match it.
-link-issue-and-pr
-
 # Runtime state
 .playwright-cli/
 
