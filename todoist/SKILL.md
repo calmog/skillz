@@ -6,20 +6,16 @@ description: "Manage Todoist — create, update, complete, and organize tasks, p
 
 # Todoist Skill
 
-## Access: MCP is the registered primary; v1 token API is the explicit fallback
+## Access: v1 token API by default; MCP only where it's actually loaded
 
-Two access paths. **Default to the MCP.** Use the token API only in the two cases named below — don't deduce when to switch, they're stated here.
+**Pick the path before the first call — it's stated here, don't deduce it.** Are `mcp__todoist__*` tools listed in this session?
 
-**Primary — the Todoist MCP connector** (`mcp__todoist__*`: `add-tasks`, `find-tasks`, `reschedule-tasks`, etc.). It's a **registered Claude Code connector** (user scope, so present in every project), added via:
-```
-claude mcp add --scope user --transport http todoist https://ai.todoist.net/mcp
-```
-Streamable HTTP + OAuth; endpoint `https://ai.todoist.net/mcp`. It shows as plain `todoist` (not `claude.ai Todoist`) — that's expected, it's the CLI-registered one, separate from account-managed connectors. **Use it for everything except the fallback cases below.**
+- **No → use the v1 token API.** This is the normal case. The todoist MCP is project-scoped: it loads ONLY in `todoist_integrator`, `morning_setup`, and `evening_review`. Its absence anywhere else is **expected, not an auth failure** — don't stop, don't tell Almog to re-auth, don't suggest `/mcp`. Go straight to the token API.
+- **Yes → use the MCP** (`add-tasks`, `find-tasks`, `reschedule-tasks`, …), except for the completed-task ops below.
 
-**Fallback — the direct v1 token API.** Reach for it in exactly two situations:
+**The one exception, for completed-task ops only** — moving a completed/filled task (preserving `completed_at`) or backdating a completion date go through the token API even in the three MCP projects. Don't uncomplete→move→recomplete via the MCP; it clobbers `completed_at`.
 
-1. **Completed-task operations the MCP genuinely cannot do** — moving a completed/filled task (preserving `completed_at`) or backdating a completion date. Always use the token API for these; don't uncomplete→move→recomplete via the MCP (it clobbers `completed_at`).
-2. **MCP unavailable mid-task** — tools not listed, `HTTP 401`/`UNAUTHORIZED`, `"This connector requires authentication"`, `"Tool not found"`, or tools that worked earlier vanishing. **Do not stop, and do not call Todoist MCP via the Anthropic API.** Note the MCP needs re-auth (tell Almog to run `/mcp` → todoist, then restart Claude Code to reload tools), but meanwhile proceed on the token API so the task still gets done.
+**MCP tools that worked earlier vanishing mid-task** (`HTTP 401`/`UNAUTHORIZED`, `"This connector requires authentication"`, `"Tool not found"`) — that one IS a real auth failure, and only inside those three projects. Note it for Almog (`/mcp` → todoist, then restart Claude Code to reload tools) and finish the task on the token API meanwhile. **Never call Todoist MCP via the Anthropic API.**
 
 Token API specifics:
 - Token: `~/.config/todoist/api_token` (40-char bearer, chmod 600 — never echo it).
