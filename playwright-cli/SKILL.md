@@ -161,7 +161,8 @@ playwright-cli video-stop video.webm
 # Show a real browser window — HEADLESS is the default, so this flag is required
 playwright-cli open --headed
 # Use specific browser when creating session
-playwright-cli open --browser=chrome
+playwright-cli open --browser=chromium   # Chrome for Testing — PREFER THIS for headed runs (see below)
+playwright-cli open --browser=chrome     # the user's installed Chrome — shares its bundle id (see below)
 playwright-cli open --browser=firefox
 playwright-cli open --browser=webkit
 playwright-cli open --browser=msedge
@@ -175,6 +176,37 @@ playwright-cli open --profile=/path/to/profile
 
 # Start with config file
 playwright-cli open --config=my-config.json
+```
+
+### `--browser=chromium` vs `--browser=chrome` for headed runs
+
+Default to **`--browser=chromium`** (which resolves to Google's *Chrome for Testing* build, not
+the OSS Chromium project) whenever a headed window will be visible on a desktop the user is
+also using.
+
+`--browser=chrome` launches the user's installed Chrome, so the automation instance carries the
+**same application bundle id** as their own browser. On macOS that means, for as long as the
+automation instance is alive: every link the user clicks anywhere on the system opens in the
+automation window, and their Dock/launcher Chrome icon just activates that instance instead of
+opening their own profile — so with their own windows closed they effectively cannot get their
+browser back. It also makes the window visually indistinguishable from their real ones. Chrome
+for Testing is a separate bundle, so it never wins the URL handler and is obvious on sight.
+
+Notes when switching an existing persistent profile over:
+- **Logins/cookies carry across.** Playwright always launches with `--use-mock-keychain
+  --password-store=basic`, so the cookie-encryption key is deterministic rather than tied to the
+  bundle's OS keychain identity. Verify without re-authenticating by copying just
+  `<profile>/Default/Cookies` into a scratch profile and reading `context.cookies()` under each
+  binary.
+- **It can be an older version** than the installed Chrome (it tracks the pinned playwright
+  revision). Opening a newer profile with it works, but the UA reports the older version.
+- **Anti-bot walls care about headlessness, not branding** — the `HeadlessChrome` UA is the tell.
+  Headed Chrome for Testing presents an ordinary Chrome UA with `navigator.webdriver === false`.
+- It lives in playwright's browser cache, not `/Applications`, and a playwright upgrade bumps the
+  revision and needs a re-install — so unattended jobs should fall back to `--browser=chrome` if
+  the open fails, rather than dying.
+
+```bash
 
 # Close the browser
 playwright-cli close

@@ -51,9 +51,18 @@ Some sites fingerprint automation and **close accounts** when they detect it. **
 # Check what's already open (free — no output block)
 playwright-cli list
 
-# Open with logged-in Chrome profile
-playwright-cli -s=$PLAYWRIGHT_SESSION open --browser=chrome --persistent --profile="/Users/YOUR_USERNAME/Library/Application Support/Google/Chrome/Profile 1" https://example.com
+# Open a persistent automation profile (own dir, reused across runs so logins/cookies stick)
+playwright-cli -s=$PLAYWRIGHT_SESSION open --browser=chromium --headed --persistent --profile="$HOME/.pw-<task>-profile" https://example.com
 ```
+
+**Prefer `--browser=chromium` over `--browser=chrome` for headed runs.** `chromium` resolves to
+Chrome for Testing — a separate `.app` bundle — so the automation window can't steal the links the
+user clicks or shadow their Dock Chrome icon (real Chrome shares its bundle id with their own
+browser and does both, for as long as the automation instance is alive). Cookies/logins in an
+existing profile survive the swap; see the `playwright-cli` skill for the mechanism and caveats.
+**Never point `--profile` at the user's real Chrome profile**
+(`~/Library/Application Support/Google/Chrome/…`): Chrome locks a profile that's already open, and
+automation writes pollute their own browser state.
 
 Always use a named session (`-s=$PLAYWRIGHT_SESSION`). Navigate + verify in one call — don't use standalone `goto` (it triggers a snapshot attempt):
 
