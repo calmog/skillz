@@ -20,17 +20,29 @@ to get past it. The approach below is the same for every Yad2 category; only the
 feed path and filter params change per vertical. Real estate is confirmed working
 (2026-06-10); treat other verticals' exact endpoints as "discover, then verify."
 
-## Step 1 — Headed real Chrome only (the one hard rule)
+## Step 1 — Headed, not headless (the one hard rule)
 
 - **Headless = blocked.** The `HeadlessChrome` UA is the tell; you get a captcha/
   challenge page, not data.
-- **Headed real Chrome passes.** Use the `playwright-cli` skill:
+- **Any headed Chrome passes** — ShieldSquare keys on headlessness, not Chrome
+  branding. Use `--browser=chromium` (Google's **Chrome for Testing**), not
+  `--browser=chrome`: real Chrome shares bundle id `com.google.Chrome` with the
+  user's own browser, so while the crawler runs macOS routes every link they click
+  into the automation window and the Dock icon activates the crawler instead of
+  their profile. CfT is a separate bundle and never wins the URL handler.
   ```
-  playwright-cli -s=$SESS open --browser=chrome --headed --persistent --profile=/tmp/pw-yad2-profile about:blank
+  playwright-cli -s=$SESS open --browser=chromium --headed --persistent --profile=/tmp/pw-yad2-profile about:blank
   ```
-  This is the working free engine and it **cannot** run headless. Any scheduling
-  must therefore be **local launchd on an awake Mac** — cloud/headless runners are
-  blocked.
+  Verified equivalent: same feed volume, no challenge page.
+- **Unattended jobs need a `--browser=chrome` fallback** — CfT lives in playwright's
+  cache dir, a playwright upgrade invalidates it, and re-installing can hang, so a
+  scheduled crawl must degrade rather than die:
+  ```
+  open_with(){ playwright-cli -s=$SESS open --browser=$1 --headed --persistent --profile=$PROFILE about:blank; }
+  open_with chromium || open_with chrome
+  ```
+- Neither binary can run headless here, so scheduling must be **local launchd on an
+  awake Mac** — cloud/headless runners are blocked.
 
 ## Step 2 — Warm the session, then use the internal feed API (don't scrape HTML)
 
