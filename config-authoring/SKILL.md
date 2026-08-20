@@ -47,6 +47,7 @@ The more expensive a miss, the further down the ladder it belongs.
 ## 3. Editing auto-memory
 
 - **MEMORY.md is an index, not a store.** One line per memory: `- [Title](file.md) — hook`. Never put memory content in MEMORY.md itself.
+- **The index has a hard ~25,000-byte load cap, and overflow is silent.** Past it the loader truncates at a line boundary — and since entries are appended, the ones it drops are the **newest**: the memory written last is the first to stop reaching context, with nothing to notice but its absence. So an entry is a title + a trigger, ~200 chars, and the detail lives in the topic file. When an index approaches the cap, trim the fattest entries and route clusters behind a sub-router memory rather than letting the tail fall off.
 - **One fact per topic file**, with frontmatter: `name` (kebab-case slug), `description` (used for recall relevance), `metadata.type` = `user | feedback | project | reference`. For `feedback`/`project`, follow the fact with **Why:** and **How to apply:** lines.
 - **Check for an existing file first** — update it rather than create a duplicate. Delete memories that turn out wrong.
 - **Link related memories** with `[[other-name]]`. **Convert relative dates to absolute.**
