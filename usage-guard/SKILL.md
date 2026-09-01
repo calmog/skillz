@@ -1,98 +1,48 @@
 ---
 name: usage-guard
-description: Calibrate the Claude Code token usage guard. Run after checking /usage to sync the guard's limit with your actual window. Also shows current usage status.
+description: Show or control the Claude Code usage guard — real 5-hour and weekly utilization from the OAuth usage endpoint, block thresholds, bypass, and the JSONL fallback calibration. No manual calibration needed anymore.
 author: calmog
-argument-hint: "<percentage from /usage>  e.g. /usage-guard 48"
+argument-hint: "(no args — shows status)"
 ---
 
-# Usage Guard Calibration
+# Usage Guard — status & control
 
-Reads current token usage from JSONL history and syncs the guard's limit based on the percentage shown by `/usage`.
+The guard (`~/.claude/scripts/check-usage.py`, PreToolUse hook on all tools) blocks tool calls when real usage nears a limit. Since 2026-08-05 it reads **exact utilization** from the OAuth usage endpoint (the same data `/usage` shows) — the 5-hour session window, the weekly limits, and the org monthly spend cap on extra-usage credits (the `spend` / `extra_usage` blocks; source of "you've hit your monthly spend limit" — admin-set on the ask-y org, only visible when extra usage is enabled) — so no token counting or calibration is needed on the primary path.
 
-## Steps
-
-1. **Count current JSONL tokens** (last 5 hours):
+## Show current status
 
 ```bash
-python3 -c "
-import json, glob, os
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
-
-HOME = Path.home()
-cutoff = datetime.now(timezone.utc) - timedelta(hours=5)
-total = 0
-oldest_ts = None
-
-for f in glob.glob(str(HOME / '.claude/projects/**/*.jsonl'), recursive=True):
-    try:
-        for line in open(f, errors='replace'):
-            try:
-                d = json.loads(line)
-                u = d.get('message', {}).get('usage')
-                ts = d.get('timestamp')
-                if not u or not ts: continue
-                t = datetime.fromisoformat(ts.replace('Z', '+00:00'))
-                if t <= cutoff: continue
-                total += u.get('input_tokens', 0)
-                total += u.get('output_tokens', 0)
-                total += u.get('cache_creation_input_tokens', 0)
-                if oldest_ts is None or t < oldest_ts: oldest_ts = t
-            except: pass
-    except: pass
-
-if oldest_ts:
-    reset_at = oldest_ts + timedelta(hours=5)
-    mins = int((reset_at - datetime.now(timezone.utc)).total_seconds() / 60)
-else:
-    mins = None
-
-print(f'TOKENS={total}')
-print(f'RESET_MINS={mins}')
+TOK=$(security find-generic-password -s "Claude Code-credentials" -w | python3 -c "import json,sys;print(json.load(sys.stdin)['claudeAiOauth']['accessToken'])")
+curl -s https://api.anthropic.com/api/oauth/usage \
+  -H "Authorization: Bearer $TOK" -H "anthropic-beta: oauth-2025-04-20" \
+  | python3 -c "
+import json,sys
+from datetime import datetime,timezone
+d=json.load(sys.stdin)
+for l in d.get('limits',[]):
+    r=l.get('resets_at')
+    if r:
+        mins=int((datetime.fromisoformat(r)-datetime.now(timezone.utc)).total_seconds()//60)
+        r=f'resets in {mins//60}h{mins%60:02d}m'
+    print(f\"{l['kind']:14s} {l.get('percent')}%  {r or ''}\")
 "
 ```
 
-2. **Get the percentage** from the skill argument (the number the user passed after `/usage-guard`). If no argument was given, ask: "What percentage does `/usage` show right now?"
+Report each limit's percentage and reset time (convert to Asia/Jerusalem when stating clock times). The guard blocks when any limit ≥ its threshold.
 
-3. **Compute the implied limit**:
-   - `limit = int(tokens / (percentage / 100))`
+## Config — `~/.claude/usage-guard-config.json`
 
-4. **Update the config**:
+- `alertThreshold` — session (5h) block fraction, default 0.95
+- `weeklyAlertThreshold` — weekly block fraction, default 0.95
+- `windowLimitTokens` — **fallback only** (JSONL counting when Keychain/network fails); `0` disables the guard entirely
+- `autoCalibrate` — `false` stops the daily fallback recalibration
 
-```bash
-python3 -c "
-import json
-from pathlib import Path
-cfg = Path.home() / '.claude' / 'usage-guard-config.json'
-data = json.loads(cfg.read_text())
-data['windowLimitTokens'] = LIMIT_VALUE
-cfg.write_text(json.dumps(data, indent=2))
-print('Updated windowLimitTokens to LIMIT_VALUE')
-"
-```
-Replace `LIMIT_VALUE` with the computed limit integer.
+After config changes: `rm -f ~/.claude/usage-guard-cache.json` so the next tool call re-reads.
 
-5. **Clear the cache** so the next tool call re-scans with the fresh limit:
+## Bypassing a block (Almog's explicit say-so only)
 
-```bash
-rm -f ~/.claude/usage-guard-cache.json
-```
+`touch ~/.claude/usage-guard-bypass` — the guard whitelists exactly that command while blocking, so a blocked session can run it. Valid 60 minutes; auto-deleted once usage drops below threshold. Almog can also type `! touch ~/.claude/usage-guard-bypass`. Never create the bypass without him explicitly saying to continue.
 
-6. **Report to the user**:
-   - Current usage: `{tokens:,}` tokens = `{percentage}%` of `{limit:,}` limit
-   - Guard triggers at: `{int(limit * threshold):,}` tokens (`{int(threshold*100)}%`)
-   - Window resets in: `{reset_mins}` minutes
-   - Status: active / disabled (if limit is 0)
+## Fallback auto-calibration (no action needed)
 
-## Config reference
-
-`~/.claude/usage-guard-config.json`:
-```json
-{
-  "windowLimitTokens": 3118372,
-  "alertThreshold": 0.95
-}
-```
-
-- `windowLimitTokens`: set to 0 to disable the guard entirely
-- `alertThreshold`: fraction at which tool calls are blocked (default 0.95)
+Only relevant when the endpoint is unreachable. `scripts/usage-guard-calibrate.py` runs detached once a day (spawned by the hook via the `~/.claude/usage-guard-last-calib` stamp): it finds real "You've hit your session limit" deaths in transcripts, computes local 5h JSONL sums at each, and sets `windowLimitTokens` just under the lowest non-outlier. Log: `~/.claude/usage-guard-calibrate.log`.
