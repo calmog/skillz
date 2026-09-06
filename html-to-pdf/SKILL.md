@@ -22,7 +22,7 @@ binary through `puppeteer-core`. Full headless Chromium, so anything Chrome can 
 
 ## Why this exists (read before reaching for anything else)
 
-- Chrome's own `--headless --print-to-pdf` **hangs** on this Mac (ARM/Rosetta). Do not use it.
+- Chrome's own `--headless --print-to-pdf` **hangs** on this Mac. Do not use it.
 - `pandoc`, `wkhtmltopdf`, `weasyprint`, `md-to-pdf` are **not installed**.
 - An earlier version of this skill's CLI broke under Node 26 (a `yargs` extensionless-file
   ESM load error). This skill uses hand-rolled arg parsing (no yargs) so it is Node-version-proof.
@@ -66,3 +66,8 @@ the HTML before each render. See `~/.claude/pdf-rendering.md`.
 `scripts/html-to-pdf.cjs` globs `~/.cache/puppeteer/chrome/*/chrome-mac*/…` for the
 "Google Chrome for Testing" binary (version-agnostic, so a Chrome update won't break it).
 If none is found it tells you to run `npx @puppeteer/browsers install chrome@stable`.
+The lookup **prefers a Chrome build matching the host CPU** — an x86_64 Chrome-for-Testing on
+Apple Silicon runs under Rosetta, which Apple is phasing out
+(https://support.apple.com/en-us/102527). If `npx @puppeteer/browsers install` leaves a
+truncated bundle (no `Contents/Frameworks`), extract the zip yourself with
+`ditto -x -k <zip> <dest>` — `extract-zip` has silently produced partial app bundles here.

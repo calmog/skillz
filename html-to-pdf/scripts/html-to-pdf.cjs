@@ -38,24 +38,40 @@ function parseArgs(argv) {
 }
 
 // Locate a Chrome-for-Testing binary in the puppeteer cache (version-agnostic).
+// Prefers a build matching the host CPU: an x86_64 Chrome on Apple Silicon runs under
+// Rosetta, which Apple is phasing out (support.apple.com/en-us/102527).
 function findChrome() {
   const base = path.join(os.homedir(), '.cache', 'puppeteer', 'chrome');
-  let found = null;
-  try {
-    for (const ver of fs.readdirSync(base)) {
-      const dir = path.join(base, ver);
-      // mac: <ver>/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing
-      const macDirs = fs.readdirSync(dir).filter(d => d.startsWith('chrome-mac'));
-      for (const md of macDirs) {
-        const p = path.join(dir, md, 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing');
-        if (fs.existsSync(p)) found = p;
-        // linux fallback: <ver>/chrome-linux*/chrome
-        const lp = path.join(dir, md, 'chrome');
-        if (fs.existsSync(lp)) found = lp;
-      }
+  const wantArm = process.arch === 'arm64';
+  const found = [];
+  let entries = [];
+  try { entries = fs.readdirSync(base, { withFileTypes: true }); } catch (_) { return null; }
+  for (const verEnt of entries) {
+    if (!verEnt.isDirectory()) continue;              // skip leftover download .zip files
+    const dir = path.join(base, verEnt.name);
+    let inner = [];
+    try { inner = fs.readdirSync(dir); } catch (_) { continue; }
+    for (const md of inner) {
+      if (!md.startsWith('chrome-mac') && !md.startsWith('chrome-linux')) continue;
+      const mac = path.join(dir, md, 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing');
+      const lin = path.join(dir, md, 'chrome');
+      const exe = fs.existsSync(mac) ? mac : (fs.existsSync(lin) ? lin : null);
+      if (!exe) continue;
+      const ver = (verEnt.name.match(/(\d+(?:\.\d+)*)/) || [, '0'])[1]
+        .split('.').map(n => parseInt(n, 10) || 0);
+      found.push({ exe, native: md.includes('arm64') === wantArm, ver });
     }
-  } catch (_) { /* no cache dir */ }
-  return found;
+  }
+  if (!found.length) return null;
+  found.sort((a, b) => {
+    if (a.native !== b.native) return a.native ? -1 : 1;   // native arch first
+    for (let i = 0; i < Math.max(a.ver.length, b.ver.length); i++) {
+      const d = (b.ver[i] || 0) - (a.ver[i] || 0);
+      if (d) return d;                                      // then newest version
+    }
+    return 0;
+  });
+  return found[0].exe;
 }
 
 function countPdfPages(file) {
