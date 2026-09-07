@@ -19,3 +19,6 @@ ateam-apply/applied_missions.md
 # Python bytecode
 **/__pycache__/
 *.pyc
+
+# Symlink to a project-local skill that is tracked in its own project repo, not here.
+asky-review
