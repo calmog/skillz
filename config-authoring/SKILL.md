@@ -35,6 +35,16 @@ remember it every time · **trigger/skill** = Claude must first *recognize* the
 situation, then load it · **hook** = the harness enforces it deterministically.
 The more expensive a miss, the further down the ladder it belongs.
 
+**Phrase the rule so it can fire while the output is being produced, not after.** A
+rule written as a review test — "if the comment is longer than the code, cut it",
+"then trim the draft" — presumes a second pass that does not exist: prose and code
+come out in one pass, so nothing ever reaches the step where the check would run,
+and the rule only ever gets applied retrospectively once a human points at the
+result. State the *default* instead ("comments default to none; a comment is the
+exception, for X"), so the rule shapes what gets written rather than what gets
+deleted. A rule that genuinely can only be expressed as a check on finished output
+belongs in a hook that sees that output, not in prose.
+
 ## 2. Editing CLAUDE.md (global or project)
 
 - **Read it first.** Then classify the new content per §1 — most additions do NOT belong in CLAUDE.md.
