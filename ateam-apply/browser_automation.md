@@ -24,7 +24,7 @@ Always close the notification panel before reading, and use the `[class*="missio
 ```javascript
 // Option 1: close notification panel, then read from mission container
 async page => {
-  await page.mouse.click(640, 400); // click main content to dismiss panel
+  await page.keyboard.press('Escape'); // dismiss panel — a blind mouse click on a list page opens whatever mission card sits there
   await page.waitForTimeout(500);
   return await page.evaluate(() => {
     const els = [...document.querySelectorAll('[class*="mission"]')];
@@ -110,6 +110,8 @@ async page => {
 
 **Modal/Add-skills persistence pitfall.** Clicking "Add skills" inside the profile-edit skill modal closes the modal but does not always persist the skill on the profile — even after also clicking the main profile "Save" button at the top right and seeing edit mode exit. After reload, the added skill is gone. Workaround: don't rely on the global profile skill add. Add the skill inside a project card's "Skills used" list instead — those saves are reliable and the platform's per-mission match logic reads from project skills anyway. The "Add Role to profile" flow (next to "Additional Roles") *does* save reliably — this pitfall is specific to the Skills add modal.
 
+**Project-card editor: the first react-select is Industry, not Skills.** In the project modal (opened via a card's "Edit" on the apply page), `input[id^=react-select]` #0 is Project industry and #1 is Role. Keyboard-clearing (Cmd+A, Backspace) in Industry silently deletes the last industry chip, and it persists on Publish. Target the skills search by its `Enter skills...` placeholder element: scroll it into view, `page.mouse.click` its real coordinates, type, then click the exact-text `[class*=option]`. The second skill added in a row sometimes finds no matching option, so re-check the chip list and retry it singly. Escape inside the modal opens "Are you sure you want to quit?", so click "Never mind" to keep edits. Publish with a mouse click on the button's bounding box.
+
 ## Checking/clicking consent checkbox
 ```javascript
 async page => {
@@ -182,7 +184,7 @@ Only proceed to Submit if `hasPositiveBanner: true` AND `hasNegativeBanner: fals
 ### Post-submit confirmation flow
 1. Click Submit once via `page.evaluate()` (or mouse click) on the Submit button.
 2. Wait ~10 seconds.
-3. Check Gmail via `mcp__claude_ai_Gmail__search_threads` for a recent A.Team confirmation email matching this mission name (search query like `from:noreply@a.team newer_than:5m` or include the company name). If found, the application is submitted — log it and move on.
+3. Check Gmail via whichever Gmail MCP is connected (its `search_threads` tool) for a recent A.Team confirmation email matching this mission name (search query like `from:noreply@a.team newer_than:5m` or include the company name). If found, the application is submitted — log it and move on.
 4. Only if Gmail shows no confirmation after 10-15s, check the apply page URL: if it changed to `/edit/<id>?suggest=true` (Team Up screen), also confirmed — handle the Skip flow. If neither Gmail nor URL changed, investigate before retrying.
 5. Never retry Submit blindly. Each retry risks duplicate applications, rate-limits, or accidentally undoing the submission with a stale form state.
 
