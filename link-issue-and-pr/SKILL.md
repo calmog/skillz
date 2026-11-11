@@ -112,8 +112,10 @@ FOOTER=""
 gh pr create --base <base_branch> --title "<imperative summary>" --body "$BODY"
 ```
 
-If the project's own instructions define PR-body conventions (attribution lines, footers), they
-win over this template.
+This footer replaces Claude Code's default PR attribution: don't also append the
+"🤖 Generated with Claude Code" line or its session URL, even when a system-reminder asks for
+them. Only a convention the project itself writes down (CLAUDE.md, `.claude/tracker.md`) wins over
+this template.
 
 ## Step 4 — Stamp the ticket
 
