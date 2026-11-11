@@ -16,6 +16,7 @@ A personal Claude Code skills library.
 | **todoist** | When you want Claude to add, reschedule or organize Todoist tasks, projects and reminders without mangling a recurring schedule or dropping a due date, this is the playbook it checks first. |
 | **config-authoring** | When you're writing or editing anything Claude reads as instructions (a CLAUDE.md, a memory file, a SKILL.md, a guardrail doc), this is the standards and pre-flight checklist that keeps them clear and consistent. |
 | **docx-editing** | When you need Claude to read or edit a Word `.docx` file it otherwise can't open, this walks it through unzipping the document to XML, editing the text in place while keeping the formatting, and repacking it — using only `zip`/`unzip`, so no Python or Node library to install. |
+| **link-issue-and-pr** | When you're about to open a PR, this makes sure a tracking ticket exists (GitHub Issues or Linear), links the PR to it, stamps the ticket with the PR and moves it to In review. Each project describes its tracker once in `.claude/tracker.md` (template included). |
 
 ## Installation
 
