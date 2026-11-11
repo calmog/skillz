@@ -84,10 +84,6 @@ Ticket body:
     → `https://claude.ai/code/<id>` — opens on web/mobile/desktop for the signed-in account.
   - `$CLAUDE_CODE_SESSION_ID` (UUID) → `claude --resume <uuid>` — CLI, same machine only.
     Never pass the bridge id to `--resume`.
-- **One session link, not two.** Claude Code may also hand you PR attribution lines (a
-  system-reminder: "🤖 Generated with Claude Code" + a `https://claude.ai/code/session_…` URL).
-  Those go at the very end of the body, and when they already carry the claude.ai URL, leave
-  the 🔗 line out of the resume footer (keep only the `--resume` line).
 
 ```bash
 cd <repo-dir>
