@@ -22,3 +22,7 @@ ateam-apply/applied_missions.md
 
 # Symlink to a project-local skill that is tracked in its own project repo, not here.
 asky-review
+
+# Claude Code skill-sync state (claude.ai / org skills, managed by the CLI — never publish)
+synced/
+.trash/
